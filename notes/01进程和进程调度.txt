@@ -30,11 +30,26 @@ main:
     2. 进程LDT, 包含程序的数据段和代码段的指针
     3. TSS: 处理器的保存的当前状态, 寄存器
 
+    1. 先调时间片较大运转, counter = counter >> 1 + priority
+    2. 优先级越大, 越先运行
+    3. signal描述了进程目前拥有的信号集合
+    4. sigaction[32]描述了每个信号的详细信息, 执行函数等
+    5. blocked 已经被屏蔽的信号集合
+    6. exit_code
+    7. 描述内存空间start_code, end_code, end_data
+        栈start_stack, 中断栈brk
+    8. jiffies, 每10ms累加一次
+    # 文件系统相关
+    filp[]指针数组, 通过fd找到filp对应的指针
+
+
+
 
 进程调度初始化:
     1. 设置tss和ldt, 
     2. 遍历64个进程, 清空没个任务指针
     3. 汇编设置寄存器: 设置系统定时器中断, 设置系统中断
+    
 
 01进程创建:
     Linux 在初始化中进行0进程的创建(fork), 0是所有进程的父进程
@@ -65,4 +80,9 @@ fork:
         最后设置程序的LDT TSS
         然后设置位RUNNING
 
+TSS: task status segment
 
+
+schedule:
+    1. 轮训所有的进程, 是否有警告并且警告超时
+    
