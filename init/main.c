@@ -197,7 +197,7 @@ static char * envp_rc[] = { "HOME=/", NULL };
 
 static char * argv[] = { "-/bin/sh",NULL };
 static char * envp[] = { "HOME=/usr/root", NULL };
-
+//这是0进程执行函数
 void init(void)
 {
 	int pid,i;
@@ -227,7 +227,7 @@ void init(void)
 	}
 	if (pid>0)
 		while (pid != wait(&i)) //做循环等待
-   
+
 
     //如果启动不正常，出错状态
 			/* nothing */;
