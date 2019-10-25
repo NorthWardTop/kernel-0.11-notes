@@ -11,6 +11,11 @@
  * the fpu must be properly saved/resored. This hasn't been tested.
  */
 
+
+; 普通的中断处理/非系统调用
+; 负责正常到异常的堆栈切换
+
+
 .globl divide_error,debug,nmi,int3,overflow,bounds,invalid_op
 .globl double_fault,coprocessor_segment_overrun
 .globl invalid_TSS,segment_not_present,stack_segment

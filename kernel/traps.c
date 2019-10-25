@@ -10,6 +10,9 @@
  * to mainly kill the offending process (probably by giving it a signal,
  * but possibly by killing it outright if necessary).
  */
+
+// 完成不同的中断处理/异常处理
+
 #include <string.h> 
 
 #include <linux/head.h>
