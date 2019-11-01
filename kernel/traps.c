@@ -11,7 +11,7 @@
  * but possibly by killing it outright if necessary).
  */
 
-// 完成不同的中断处理/异常处理
+// 完成普通的中断处理/异常处理
 
 #include <string.h> 
 
@@ -184,10 +184,11 @@ void do_reserved(long esp, long error_code)
 void trap_init(void)
 {
 	int i;
-
+	//设置异常和异常对应编号
 	set_trap_gate(0,&divide_error);
 	set_trap_gate(1,&debug);
 	set_trap_gate(2,&nmi);
+	//system用3号权限
 	set_system_gate(3,&int3);	/* int3-5 can be called from all */
 	set_system_gate(4,&overflow);
 	set_system_gate(5,&bounds);

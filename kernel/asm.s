@@ -24,9 +24,10 @@
 divide_error:
 	pushl $do_divide_error
     
+; 完成上下文切换
 no_error_code:
 	xchgl %eax,(%esp)
-    //进行数据压栈 为调用函数做准备
+    ; //进行数据压栈 为调用函数做准备
 	pushl %ebx
 	pushl %ecx
 	pushl %edx
@@ -36,16 +37,18 @@ no_error_code:
 	push %ds
 	push %es
 	push %fs
+	; 无错误码, 压入0
 	pushl $0		# "error code"
 	lea 44(%esp),%edx
 	pushl %edx
 	movl $0x10,%edx
+	; 段标志
 	mov %dx,%ds
 	mov %dx,%es
 	mov %dx,%fs
-	//调用EAX里的地址所对应函数，最初的esp里的地址
+	; //调用EAX里的地址所对应函数，最初的esp里的地址
 	call *%eax
-	//调用返回之后进行出栈，把一些值都栈 恢复调用前状态
+	; //调用返回之后进行出栈，把一些值都栈 恢复调用前状态
 	addl $8,%esp
 	pop %fs
 	pop %es
@@ -118,6 +121,7 @@ error_code:
 	push %ds
 	push %es
 	push %fs
+	; 有错误码时候压入eax
 	pushl %eax			# error code
 	lea 44(%esp),%eax		# offset
 	pushl %eax
@@ -125,7 +129,7 @@ error_code:
 	mov %ax,%ds
 	mov %ax,%es
 	mov %ax,%fs
-	
+	; 有错误要调用ebx
 	call *%ebx
 	
 	addl $8,%esp

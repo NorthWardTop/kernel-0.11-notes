@@ -82,30 +82,33 @@ reschedule:
 	jmp schedule
 .align 2
 system_call:
-    //做参数判断
+    ; //做参数判断
+	; 超过系统已有的调用号就进行错误跳转
 	cmpl $nr_system_calls-1,%eax
 	ja bad_sys_call
-	// 做系统调用前的寄存器入栈操作
+	; // 做系统调用前的寄存器入栈操作
 	push %ds
 	push %es
 	push %fs
 	pushl %edx
 	pushl %ecx		# push %ebx,%ecx,%edx as parameters
 	pushl %ebx		# to the system call
+	; fs内核态, 向内核态切换
 	movl $0x10,%edx		# set up ds,es to kernel space
 	mov %dx,%ds
 	mov %dx,%es
 	movl $0x17,%edx		# fs points to local data space
 	mov %dx,%fs
 
-    // 调用系统调用实现函数
+    ; // 调用系统调用实现函数
 	call sys_call_table(,%eax,4)
-	
 	pushl %eax
+	; 检测当前程序状态, 如果不是(jne)0(运行状态)
 	movl current,%eax
 	cmpl $0,state(%eax)		# state
-	
+	; 调用reschedule重新调度
 	jne reschedule
+	; 如果时间片到0, 则重新调度
 	cmpl $0,counter(%eax)		# counter
 	je reschedule
 	
@@ -127,9 +130,9 @@ ret_from_sys_call:
 	movl %ebx,signal(%eax)
 	incl %ecx
 	pushl %ecx
-	//系统调用结束的信号返回函数
+	; //系统调用结束的信号返回函数
 	call do_signal
-	//系统调用结束的栈堆回复函数
+	; //系统调用结束的栈堆回复函数
 	popl %eax
 3:	popl %eax
 	popl %ebx
